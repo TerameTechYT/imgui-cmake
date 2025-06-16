@@ -25,7 +25,6 @@ option(IMGUI_VULKAN OFF)
 project(game LANGUAGES CXX)
 
 add_subdirectory(backends)
-add_subdirectory(misc)
 
 include(FetchContent)
 FetchContent_Declare(glfw GIT_REPOSITORY https://github.com/glfw/glfw.git GIT_TAG master)
@@ -46,6 +45,11 @@ add_library(imgui.core SHARED
     "imgui_widgets.cpp"
     "imgui_widgets.cpp"
 
+    "misc/cpp/imgui_stdlib.h"
+    "misc/cpp/imgui_stdlib.cpp"
+    #"misc/freetype/imgui_freetype.h"
+    #"misc/freetype/imgui_freetype.cpp"
+
     "imstb_rectpack.h"
     "imstb_textedit.h"
     "imstb_truetype.h"
@@ -57,4 +61,4 @@ target_include_directories(imgui.core PUBLIC ${glfw_SOURCE_DIR}/include)
 target_include_directories(imgui.core PUBLIC ${sdl_SOURCE_DIR}/include)
 target_include_directories(imgui.core PUBLIC ${Vulkan_INCLUDE_DIRS})
 target_link_libraries(imgui.core PUBLIC OpenGL::GL glfw SDL3-static ${Vulkan_LIBRARIES})
-target_compile_definitions(imgui.core PUBLIC BUILDING)
+target_compile_definitions(imgui.core PRIVATE BUILDING)
