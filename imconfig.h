@@ -25,7 +25,7 @@
 //   for each static/DLL boundary you are calling from. Read "Context and Memory Allocators" section of imgui.cpp for more details.
 #ifdef BUILDING
 #define IMGUI_API __declspec(dllexport)                   // MSVC Windows: DLL export
-#elif
+#else
 #define IMGUI_API __declspec(dllimport)                   // MSVC Windows: DLL import
 #endif
 //#define IMGUI_API __attribute__((visibility("default")))  // GCC/Clang: override visibility when set is hidden
