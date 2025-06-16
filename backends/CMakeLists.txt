@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 if(IMGUI_ALLEGRO5)
-    add_library(imgui.backends.allegro5 SHARED
+    add_library(imgui.backends.allegro5 STATIC
         "imgui_impl_allego5.h"
         "imgui_impl_allego5.cpp"
     )
@@ -11,7 +11,7 @@ if(IMGUI_ALLEGRO5)
 endif()
 
 if(IMGUI_ANDROID)
-    add_library(imgui.backends.android SHARED
+    add_library(imgui.backends.android STATIC
         "imgui_impl_android.h"
         "imgui_impl_android.cpp"
     )
@@ -21,7 +21,7 @@ if(IMGUI_ANDROID)
 endif()
 
 if(IMGUI_DX9)
-    add_library(imgui.backends.dx9 SHARED
+    add_library(imgui.backends.dx9 STATIC
         "imgui_impl_dx9.h"
         "imgui_impl_dx9.cpp"
     )
@@ -39,7 +39,7 @@ if(IMGUI_DX9)
 endif()
 
 if(IMGUI_DX10)
-    add_library(imgui.backends.dx10 SHARED
+    add_library(imgui.backends.dx10 STATIC
         "imgui_impl_dx10.h"
         "imgui_impl_dx10.cpp"
     )
@@ -53,7 +53,7 @@ if(IMGUI_DX10)
 endif()
 
 if(IMGUI_DX11)
-    add_library(imgui.backends.dx11 SHARED
+    add_library(imgui.backends.dx11 STATIC
         "imgui_impl_dx11.h"
         "imgui_impl_dx11.cpp"
     )
@@ -67,7 +67,7 @@ if(IMGUI_DX11)
 endif()
 
 if(IMGUI_DX12)
-    add_library(imgui.backends.dx12 SHARED
+    add_library(imgui.backends.dx12 STATIC
         "imgui_impl_dx12.h"
         "imgui_impl_dx12.cpp"
     )
@@ -80,7 +80,7 @@ if(IMGUI_DX12)
 endif()
 
 if(IMGUI_GLFW)
-    add_library(imgui.backends.glfw SHARED
+    add_library(imgui.backends.glfw STATIC
         "imgui_impl_glfw.h"
         "imgui_impl_glfw.cpp"
     )
@@ -105,7 +105,7 @@ if(IMGUI_GLFW)
 endif()
 
 if(IMGUI_GLUT)
-    add_library(imgui.backends.glut SHARED
+    add_library(imgui.backends.glut STATIC
         "imgui_impl_glut.h"
         "imgui_impl_glut.cpp"
     )
@@ -123,7 +123,7 @@ if(IMGUI_GLUT)
 endif()
 
 if(IMGUI_OPENGL2)
-    add_library(imgui.backends.opengl2 SHARED
+    add_library(imgui.backends.opengl2 STATIC
         "imgui_impl_opengl2.h"
         "imgui_impl_opengl2.cpp"
     )
@@ -139,7 +139,7 @@ if(IMGUI_OPENGL2)
 endif()
 
 if(IMGUI_OPENGL3)
-    add_library(imgui.backends.opengl3 SHARED
+    add_library(imgui.backends.opengl3 STATIC
         "imgui_impl_opengl3.h"
         "imgui_impl_opengl3.cpp"
     )
@@ -155,7 +155,7 @@ if(IMGUI_OPENGL3)
 endif()
 
 if(IMGUI_VULKAN)
-    add_library(imgui.backends.vulkan SHARED
+    add_library(imgui.backends.vulkan STATIC
         "imgui_impl_vulkan.h"
         "imgui_impl_vulkan.cpp"
     )

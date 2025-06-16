@@ -33,7 +33,7 @@ FetchContent_MakeAvailable(glfw)
 FetchContent_Declare(sdl GIT_REPOSITORY https://github.com/libsdl-org/SDL GIT_TAG main)
 FetchContent_MakeAvailable(sdl)
 
-add_library(imgui.core SHARED
+add_library(imgui.core STATIC
     "imconfig.h"
 
     "imgui.h"
