@@ -1,4 +1,4 @@
-// dear imgui, v1.92.0 WIP
+// dear imgui, v1.92.1 WIP
 // (internal structures/api)
 
 // You may use this file to debug, understand or extend Dear ImGui features but we don't provide any guarantee of forward compatibility.
@@ -838,9 +838,10 @@ struct IMGUI_API ImDrawListSharedData
 {
     ImVec2          TexUvWhitePixel;            // UV of white pixel in the atlas (== FontAtlas->TexUvWhitePixel)
     const ImVec4*   TexUvLines;                 // UV of anti-aliased lines in the atlas (== FontAtlas->TexUvLines)
-    ImFont*         Font;                       // Current/default font (optional, for simplified AddText overload)
-    float           FontSize;                   // Current/default font size (optional, for simplified AddText overload)
-    float           FontScale;                  // Current/default font scale (== FontSize / Font->FontSize)
+    ImFontAtlas*    FontAtlas;                  // Current font atlas
+    ImFont*         Font;                       // Current font (used for simplified AddText overload)
+    float           FontSize;                   // Current font size (used for for simplified AddText overload)
+    float           FontScale;                  // Current font scale (== FontSize / Font->FontSize)
     float           CurveTessellationTol;       // Tessellation tolerance when using PathBezierCurveTo()
     float           CircleSegmentMaxError;      // Number of circle segments to use per pixel of radius for AddCircle() etc
     float           InitialFringeScale;         // Initial scale to apply to AA fringe
@@ -2142,7 +2143,7 @@ struct ImGuiContext
     ImFont*                 Font;                               // Currently bound font. (== FontStack.back().Font)
     ImFontBaked*            FontBaked;                          // Currently bound font at currently bound size. (== Font->GetFontBaked(FontSize))
     float                   FontSize;                           // Currently bound font size == line height (== FontSizeBase + externals scales applied in the UpdateCurrentFontSize() function).
-    float                   FontSizeBase;                       // Font size before scaling == style.FontSizeBase == value passed to PushFont() / PushFontSize() when specified.
+    float                   FontSizeBase;                       // Font size before scaling == style.FontSizeBase == value passed to PushFont() when specified.
     float                   FontBakedScale;                     // == FontBaked->Size / FontSize. Scale factor over baked size. Rarely used nowadays, very often == 1.0f.
     float                   FontRasterizerDensity;              // Current font density. Used by all calls to GetFontBaked().
     float                   CurrentDpiScale;                    // Current window/viewport DpiScale == CurrentViewport->DpiScale
@@ -2981,7 +2982,7 @@ struct IMGUI_API ImGuiTable
     bool                        IsSortSpecsDirty;
     bool                        IsUsingHeaders;             // Set when the first row had the ImGuiTableRowFlags_Headers flag.
     bool                        IsContextPopupOpen;         // Set when default context menu is open (also see: ContextPopupColumn, InstanceInteracted).
-    bool                        DisableDefaultContextMenu;  // Disable default context menu contents. You may submit your own using TableBeginContextMenuPopup()/EndPopup()
+    bool                        DisableDefaultContextMenu;  // Disable default context menu. You may submit your own using TableBeginContextMenuPopup()/EndPopup()
     bool                        IsSettingsRequestLoad;
     bool                        IsSettingsDirty;            // Set when table settings have changed and needs to be reported into ImGuiTableSetttings data.
     bool                        IsDefaultDisplayOrder;      // Set when display order is unchanged from default (DisplayOrder contains 0...Count-1)
@@ -3690,7 +3691,7 @@ struct ImFontLoader
     bool            (*FontSrcContainsGlyph)(ImFontAtlas* atlas, ImFontConfig* src, ImWchar codepoint);
     bool            (*FontBakedInit)(ImFontAtlas* atlas, ImFontConfig* src, ImFontBaked* baked, void* loader_data_for_baked_src);
     void            (*FontBakedDestroy)(ImFontAtlas* atlas, ImFontConfig* src, ImFontBaked* baked, void* loader_data_for_baked_src);
-    bool            (*FontBakedLoadGlyph)(ImFontAtlas* atlas, ImFontConfig* src, ImFontBaked* baked, void* loader_data_for_baked_src, ImWchar codepoint, ImFontGlyph* out_glyph);
+    bool            (*FontBakedLoadGlyph)(ImFontAtlas* atlas, ImFontConfig* src, ImFontBaked* baked, void* loader_data_for_baked_src, ImWchar codepoint, ImFontGlyph* out_glyph, float* out_advance_x);
 
     // Size of backend data, Per Baked * Per Source. Buffers are managed by core to avoid excessive allocations.
     // FIXME: At this point the two other types of buffers may be managed by core to be consistent?
@@ -3710,10 +3711,13 @@ typedef ImFontLoader ImFontBuilderIO; // [renamed/changed in 1.92] The types are
 // [SECTION] ImFontAtlas internal API
 //-----------------------------------------------------------------------------
 
+#define IMGUI_FONT_SIZE_MAX                                     (512.0f)
+#define IMGUI_FONT_SIZE_THRESHOLD_FOR_LOADADVANCEXONLYMODE      (128.0f)
+
 // Helpers: ImTextureRef ==/!= operators provided as convenience
 // (note that _TexID and _TexData are never set simultaneously)
-static inline bool operator==(const ImTextureRef& lhs, const ImTextureRef& rhs) { return lhs._TexID == rhs._TexID && lhs._TexData == rhs._TexData; }
-static inline bool operator!=(const ImTextureRef& lhs, const ImTextureRef& rhs) { return lhs._TexID != rhs._TexID || lhs._TexData != rhs._TexData; }
+inline bool operator==(const ImTextureRef& lhs, const ImTextureRef& rhs)    { return lhs._TexID == rhs._TexID && lhs._TexData == rhs._TexData; }
+inline bool operator!=(const ImTextureRef& lhs, const ImTextureRef& rhs)    { return lhs._TexID != rhs._TexID || lhs._TexData != rhs._TexData; }
 
 // Refer to ImFontAtlasPackGetRect() to better understand how this works.
 #define ImFontAtlasRectId_IndexMask_        (0x000FFFFF)    // 20-bits: index to access builder->RectsIndex[].
@@ -3745,7 +3749,7 @@ struct ImFontAtlasPostProcessData
     ImFontGlyph*        Glyph;
 
     // Pixel data
-    unsigned char*      Pixels;
+    void*               Pixels;
     ImTextureFormat     Format;
     int                 Pitch;
     int                 Width;
@@ -3826,6 +3830,7 @@ IMGUI_API ImFontBaked*      ImFontAtlasBakedGetClosestMatch(ImFontAtlas* atlas, 
 IMGUI_API ImFontBaked*      ImFontAtlasBakedAdd(ImFontAtlas* atlas, ImFont* font, float font_size, float font_rasterizer_density, ImGuiID baked_id);
 IMGUI_API void              ImFontAtlasBakedDiscard(ImFontAtlas* atlas, ImFont* font, ImFontBaked* baked);
 IMGUI_API ImFontGlyph*      ImFontAtlasBakedAddFontGlyph(ImFontAtlas* atlas, ImFontBaked* baked, ImFontConfig* src, const ImFontGlyph* in_glyph);
+IMGUI_API void              ImFontAtlasBakedAddFontGlyphAdvancedX(ImFontAtlas* atlas, ImFontBaked* baked, ImFontConfig* src, ImWchar codepoint, float advance_x);
 IMGUI_API void              ImFontAtlasBakedDiscardFontGlyph(ImFontAtlas* atlas, ImFont* font, ImFontBaked* baked, ImFontGlyph* glyph);
 IMGUI_API void              ImFontAtlasBakedSetFontGlyphBitmap(ImFontAtlas* atlas, ImFontBaked* baked, ImFontConfig* src, ImFontGlyph* glyph, ImTextureRect* r, const unsigned char* src_pixels, ImTextureFormat src_fmt, int src_pitch);
 
