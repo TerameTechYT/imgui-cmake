@@ -70,6 +70,14 @@ if(IMGUI_GLFW)
 
     target_link_libraries(imgui.backends.glfw PUBLIC imgui.core)
     target_include_directories(imgui.backends.glfw PUBLIC ${CMAKE_SOURCE_DIR})
+
+    ##--  OPENGL + VULKAN
+    target_link_libraries(imgui.backends.glfw PUBLIC OpenGL::GL ${Vulkan_LIBRARIES})
+    target_include_directories(imgui.backends.glfw PUBLIC ${Vulkan_INCLUDE_DIRS})
+
+    ##-- GLFW
+    target_link_libraries(imgui.backends.glfw PUBLIC glfw)
+    target_include_directories(imgui.backends.glfw PUBLIC ${glfw_SOURCE_DIR}/include)
 endif()
 
 if(IMGUI_GLUT)
@@ -119,4 +127,8 @@ if(IMGUI_VULKAN)
 
     target_link_libraries(imgui.backends.vulkan PUBLIC imgui.core)
     target_include_directories(imgui.backends.vulkan PUBLIC ${CMAKE_SOURCE_DIR})
+
+    ##--  VULKAN
+    target_link_libraries(imgui.backends.vulkan PUBLIC ${Vulkan_LIBRARIES})
+    target_include_directories(imgui.backends.vulkan PUBLIC ${Vulkan_INCLUDE_DIRS})
 endif()
