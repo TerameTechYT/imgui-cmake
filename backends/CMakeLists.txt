@@ -28,14 +28,6 @@ if(IMGUI_DX9)
 
     target_link_libraries(imgui.backends.dx9 PUBLIC imgui.core)
     target_include_directories(imgui.backends.dx9 PUBLIC ${CMAKE_SOURCE_DIR})
-
-    ##-- GLFW
-    target_link_libraries(imgui.backends.dx9 PUBLIC glfw)
-    target_include_directories(imgui.backends.dx9 PUBLIC ${glfw_SOURCE_DIR}/include)
-
-    ##-- SDL
-    target_link_libraries(imgui.backends.dx9 PUBLIC SDL3-static)
-    target_include_directories(imgui.backends.dx9 PUBLIC ${sdl_SOURCE_DIR}/include)
 endif()
 
 if(IMGUI_DX10)
@@ -46,10 +38,6 @@ if(IMGUI_DX10)
 
     target_link_libraries(imgui.backends.dx10 PUBLIC imgui.core)
     target_include_directories(imgui.backends.dx10 PUBLIC ${CMAKE_SOURCE_DIR})
-
-    ##-- SDL
-    target_link_libraries(imgui.backends.dx10 PUBLIC SDL3-static)
-    target_include_directories(imgui.backends.dx10 PUBLIC ${sdl_SOURCE_DIR}/include)
 endif()
 
 if(IMGUI_DX11)
@@ -60,10 +48,6 @@ if(IMGUI_DX11)
 
     target_link_libraries(imgui.backends.dx11 PUBLIC imgui.core)
     target_include_directories(imgui.backends.dx11 PUBLIC ${CMAKE_SOURCE_DIR})
-
-    ##-- SDL
-    target_link_libraries(imgui.backends.dx11 PUBLIC SDL3-static)
-    target_include_directories(imgui.backends.dx11 PUBLIC ${sdl_SOURCE_DIR}/include)
 endif()
 
 if(IMGUI_DX12)
@@ -73,10 +57,6 @@ if(IMGUI_DX12)
     )
     target_link_libraries(imgui.backends.dx12 PUBLIC imgui.core)
     target_include_directories(imgui.backends.dx12 PUBLIC ${CMAKE_SOURCE_DIR})
-
-    ##-- SDL
-    target_link_libraries(imgui.backends.dx12 PUBLIC SDL3-static)
-    target_include_directories(imgui.backends.dx12 PUBLIC ${sdl_SOURCE_DIR}/include)
 endif()
 
 if(IMGUI_GLFW)
@@ -90,18 +70,6 @@ if(IMGUI_GLFW)
 
     target_link_libraries(imgui.backends.glfw PUBLIC imgui.core)
     target_include_directories(imgui.backends.glfw PUBLIC ${CMAKE_SOURCE_DIR})
-
-    ##--  OPENGL + VULKAN
-    target_link_libraries(imgui.backends.glfw PUBLIC OpenGL::GL ${Vulkan_LIBRARIES})
-    target_include_directories(imgui.backends.glfw PUBLIC ${Vulkan_INCLUDE_DIRS})
-
-    ##-- GLFW
-    target_link_libraries(imgui.backends.glfw PUBLIC glfw)
-    target_include_directories(imgui.backends.glfw PUBLIC ${glfw_SOURCE_DIR}/include)
-
-    ##-- SDL
-    target_link_libraries(imgui.backends.glfw PUBLIC SDL3-static)
-    target_include_directories(imgui.backends.glfw PUBLIC ${sdl_SOURCE_DIR}/include)
 endif()
 
 if(IMGUI_GLUT)
@@ -115,11 +83,6 @@ if(IMGUI_GLUT)
 
     target_link_libraries(imgui.backends.glut PUBLIC imgui.core)
     target_include_directories(imgui.backends.glut PUBLIC ${CMAKE_SOURCE_DIR})
-
-    ##--  OPENGL + VULKAN
-    target_link_libraries(imgui.backends.glut PUBLIC OpenGL::GL ${Vulkan_LIBRARIES})
-    target_include_directories(imgui.backends.glut PUBLIC ${Vulkan_INCLUDE_DIRS})
-
 endif()
 
 if(IMGUI_OPENGL2)
@@ -132,10 +95,6 @@ if(IMGUI_OPENGL2)
 
     target_link_libraries(imgui.backends.opengl2 PUBLIC imgui.core)
     target_include_directories(imgui.backends.opengl2 PUBLIC ${CMAKE_SOURCE_DIR})
-
-    ##--  OPENGL
-    target_link_libraries(imgui.backends.opengl2 PUBLIC OpenGL::GL)
-    target_include_directories(imgui.backends.opengl2 PUBLIC)
 endif()
 
 if(IMGUI_OPENGL3)
@@ -148,10 +107,6 @@ if(IMGUI_OPENGL3)
 
     target_link_libraries(imgui.backends.opengl3 PUBLIC imgui.core)
     target_include_directories(imgui.backends.opengl3 PUBLIC ${CMAKE_SOURCE_DIR})
-
-    ##--  OPENGL
-    target_link_libraries(imgui.backends.opengl3 PUBLIC OpenGL::GL)
-    target_include_directories(imgui.backends.opengl3 PUBLIC)
 endif()
 
 if(IMGUI_VULKAN)
@@ -164,8 +119,4 @@ if(IMGUI_VULKAN)
 
     target_link_libraries(imgui.backends.vulkan PUBLIC imgui.core)
     target_include_directories(imgui.backends.vulkan PUBLIC ${CMAKE_SOURCE_DIR})
-
-    ##--  VULKAN
-    target_link_libraries(imgui.backends.vulkan PUBLIC ${Vulkan_LIBRARIES})
-    target_include_directories(imgui.backends.vulkan PUBLIC ${Vulkan_INCLUDE_DIRS})
 endif()
