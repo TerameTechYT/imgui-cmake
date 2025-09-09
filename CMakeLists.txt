@@ -48,3 +48,14 @@ add_library(imgui.core STATIC
 )
 
 target_compile_definitions(imgui.core PRIVATE BUILDING)
+
+add_library(imgui.implot STATIC
+    "implot.h"
+    "implot.cpp"
+    "implot_items.cpp"
+    "implot_demo.cpp"
+
+    "implot_internal.h"
+)
+
+target_compile_definitions(imgui.core PRIVATE BUILDING)
