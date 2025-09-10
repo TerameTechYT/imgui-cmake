@@ -35,7 +35,6 @@ add_library(imgui.core STATIC
     "imgui_draw.cpp"
     "imgui_tables.cpp"
     "imgui_widgets.cpp"
-    "imgui_widgets.cpp"
 
     "misc/cpp/imgui_stdlib.h"
     "misc/cpp/imgui_stdlib.cpp"
@@ -58,4 +57,4 @@ add_library(imgui.implot STATIC
     "implot_internal.h"
 )
 
-target_compile_definitions(imgui.core PRIVATE BUILDING)
+target_compile_definitions(imgui.implot PRIVATE BUILDING)
